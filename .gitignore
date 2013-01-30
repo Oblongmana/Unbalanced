@@ -161,3 +161,7 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+#Actual stuff
+AUD20120129.csv
+AUD20130130.csv
