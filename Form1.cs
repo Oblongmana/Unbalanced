@@ -17,7 +17,7 @@ namespace Unbalanced
             InitializeComponent();
         }
 
-		private static void BuildPathsAndSumsTogether (List<Tuple<Decimal,List<String>>> SumsAndOpps, List<Tuple<Decimal,List<String>>> AbsSumsAndOpps, List<Decimal> DecimalsToSum, List<String> oppsSoFar, Decimal sumSoFar, int count, int stop)
+		private static void BuildPathsAndSumsTogether (List<Tuple<Decimal,List<String>>> SumsAndOpps, List<Tuple<Decimal,Decimal,List<String>>> AbsSumsAndOpps, List<Decimal> DecimalsToSum, List<String> oppsSoFar, Decimal sumSoFar, int count, int stop)
 		{
 			if (count < stop)
 			{
@@ -41,7 +41,7 @@ namespace Unbalanced
 			else
 			{
 				SumsAndOpps.Add(new Tuple<decimal, List<string>>(sumSoFar,oppsSoFar));
-				AbsSumsAndOpps.Add(new Tuple<decimal, List<string>>(Math.Abs(sumSoFar), oppsSoFar));
+				AbsSumsAndOpps.Add(new Tuple<decimal, decimal, List<string>>(Math.Abs(sumSoFar), sumSoFar, oppsSoFar));
 			}
 		}
 
@@ -115,7 +115,7 @@ namespace Unbalanced
 					}
                     
 					List<Tuple<Decimal,List<String>>> SumsAndOpps = new List<Tuple<Decimal,List<String>>>();
-					List<Tuple<Decimal,List<String>>> AbsSumsAndOpps = new List<Tuple<Decimal,List<String>>>();
+					List<Tuple<Decimal,Decimal,List<String>>> AbsSumsAndOpps = new List<Tuple<Decimal,Decimal,List<String>>>();
 					List<String> OppsSoFar = new List<string>();
 
 					BuildPathsAndSumsTogether (SumsAndOpps, AbsSumsAndOpps, DecimalsToSum, OppsSoFar, 0, 0, columnCount);
@@ -146,15 +146,15 @@ namespace Unbalanced
 						textBox1.Text = "This combination of numbers has no possible way to balance. The " + n + " solutions closest to 0 follow." + Environment.NewLine;
 
 						for(int closeResultPos = 0 ; closeResultPos < n; closeResultPos++) {
-							Tuple<Decimal,List<string>> sumWithOpps = AbsSumsAndOpps[closeResultPos];
+							Tuple<Decimal,Decimal,List<string>> sumWithOpps = AbsSumsAndOpps[closeResultPos];
 							for(int account = 0; account < ItemNames.Count; account++) {
 								textBox1.Text += (ItemNames[account].PadLeft(30) + ":" 
 								                  + DecimalsToSum[account].ToString().PadLeft(15).PadRight(4) 
-								                  + "(" + sumWithOpps.Item2[account] + ")" 
+								                  + "(" + sumWithOpps.Item3[account] + ")" 
 								                  + Environment.NewLine);
 							}
 							textBox1.Text += ("Balances To".PadLeft(30) + ":" 
-							                  + sumWithOpps.Item1.ToString().PadLeft(15) 
+							                  + sumWithOpps.Item2.ToString().PadLeft(15) 
 							                  + Environment.NewLine + Environment.NewLine);
 						}
 					}
