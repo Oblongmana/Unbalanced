@@ -10,13 +10,13 @@ using GenericParsing;
 
 namespace Unbalanced
 {
-    public partial class Form1 : Form
-    {
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
+	public partial class Form1 : Form
+	{
+		public Form1()
+		{
+			InitializeComponent();
+		}
+		
 		private static void BuildPathsAndSumsTogether (List<Tuple<Decimal,List<String>>> SumsAndOpps, List<Tuple<Decimal,Decimal,List<String>>> AbsSumsAndOpps, List<Decimal> DecimalsToSum, List<String> oppsSoFar, Decimal sumSoFar, int count, int stop)
 		{
 			if (count < stop)
@@ -31,7 +31,7 @@ namespace Unbalanced
 					oppsSoFar.Add("+");
 					sumSoFar += amount;
 					BuildPathsAndSumsTogether(SumsAndOpps, AbsSumsAndOpps, DecimalsToSum, new List<String>(oppsSoFar), sumSoFar, count + 1, stop);
-
+					
 					oppsSoFar.RemoveAt(count);
 					oppsSoFar.Add("-");
 					sumSoFar -= (amount*2);
@@ -44,90 +44,90 @@ namespace Unbalanced
 				AbsSumsAndOpps.Add(new Tuple<decimal, decimal, List<string>>(Math.Abs(sumSoFar), sumSoFar, oppsSoFar));
 			}
 		}
-
-        private static void BuildPaths(List<List<String>> Operations, List<String> pathSoFar, int count, int stop)
-        {
-            if (count < stop)
-            {
-                pathSoFar.Add("+");
-                BuildPaths(Operations,new List<String>(pathSoFar), count + 1, stop);
-
-                pathSoFar.RemoveAt(count);
-                pathSoFar.Add("-");
-                BuildPaths(Operations,new List<String>(pathSoFar), count + 1, stop);
-            }
-            else
-            {
-                Operations.Add(pathSoFar);
-            }
-        }
-
-        private static void SumPaths(List<Decimal> DecimalsToSum, List<Decimal> Sums, Decimal sumSoFar, int count, int stop)
-        {
-            if (count < stop)
-            {
-                sumSoFar += DecimalsToSum[count];
-                SumPaths(DecimalsToSum, Sums, sumSoFar, count + 1, stop);
-
-                sumSoFar -= (DecimalsToSum[count]*2);
-                SumPaths(DecimalsToSum, Sums, sumSoFar, count + 1, stop);
-            }
-            else
-            {
-                Sums.Add(sumSoFar);
-            }
-        }
-
-        private void btn1_Click(object sender, EventArgs e)
-        {
-            DialogResult result = ofd1.ShowDialog();
-        }
-
-        private void btn2_Click(object sender, EventArgs e)
-        {
-            //ArgumentParser argParser = new ArgumentParser(args);
-
-            String dataSource = ofd1.FileName;//argParser["o"];
-
-            if (dataSource != null)
-            {
-                try
-                {
-                    GenericParser parser = new GenericParser();
-                    parser.SetDataSource(dataSource);
-                    parser.FirstRowHasHeader = true;
-                    parser.Read();
-
-                    int columnCount = parser.ColumnCount;
-
+		
+		private static void BuildPaths(List<List<String>> Operations, List<String> pathSoFar, int count, int stop)
+		{
+			if (count < stop)
+			{
+				pathSoFar.Add("+");
+				BuildPaths(Operations,new List<String>(pathSoFar), count + 1, stop);
+				
+				pathSoFar.RemoveAt(count);
+				pathSoFar.Add("-");
+				BuildPaths(Operations,new List<String>(pathSoFar), count + 1, stop);
+			}
+			else
+			{
+				Operations.Add(pathSoFar);
+			}
+		}
+		
+		private static void SumPaths(List<Decimal> DecimalsToSum, List<Decimal> Sums, Decimal sumSoFar, int count, int stop)
+		{
+			if (count < stop)
+			{
+				sumSoFar += DecimalsToSum[count];
+				SumPaths(DecimalsToSum, Sums, sumSoFar, count + 1, stop);
+				
+				sumSoFar -= (DecimalsToSum[count]*2);
+				SumPaths(DecimalsToSum, Sums, sumSoFar, count + 1, stop);
+			}
+			else
+			{
+				Sums.Add(sumSoFar);
+			}
+		}
+		
+		private void btn1_Click(object sender, EventArgs e)
+		{
+			DialogResult result = ofd1.ShowDialog();
+		}
+		
+		private void btn2_Click(object sender, EventArgs e)
+		{
+			//ArgumentParser argParser = new ArgumentParser(args);
+			
+			String dataSource = ofd1.FileName;//argParser["o"];
+			
+			if (dataSource != null)
+			{
+				try
+				{
+					GenericParser parser = new GenericParser();
+					parser.SetDataSource(dataSource);
+					parser.FirstRowHasHeader = true;
+					parser.Read();
+					
+					int columnCount = parser.ColumnCount;
+					
 					//Work out the names of the Accounts we need to sum
-                    List<string> ItemNames = new List<string>();
-                    for (int i = 0; i < columnCount; i++)
-                    {
-                        ItemNames.Add (parser.GetColumnName(i));
-                    }
-
+					List<string> ItemNames = new List<string>();
+					for (int i = 0; i < columnCount; i++)
+					{
+						ItemNames.Add (parser.GetColumnName(i));
+					}
+					
 					//Work out the numbers we need to sum
 					List<Decimal> DecimalsToSum = new List<decimal>();
 					for (int decimalCounter = 0; decimalCounter < columnCount; decimalCounter++)
 					{
 						DecimalsToSum.Add(Decimal.Parse(parser[decimalCounter]));
 					}
-                    
+					
 					List<Tuple<Decimal,List<String>>> SumsAndOpps = new List<Tuple<Decimal,List<String>>>();
 					List<Tuple<Decimal,Decimal,List<String>>> AbsSumsAndOpps = new List<Tuple<Decimal,Decimal,List<String>>>();
 					List<String> OppsSoFar = new List<string>();
-
+					
 					BuildPathsAndSumsTogether (SumsAndOpps, AbsSumsAndOpps, DecimalsToSum, OppsSoFar, 0, 0, columnCount);
 					SumsAndOpps.Sort( (a,b) => a.Item1.CompareTo(b.Item1) );
 					AbsSumsAndOpps.Sort( (a,b) => a.Item1.CompareTo(b.Item1) );
-
+					
 					int countSuccess = 0;
 					textBox1.Text = "";
 					foreach(Tuple<Decimal,List<string>> sumWithOpps in SumsAndOpps) {
 						if(sumWithOpps.Item1 == 0) {
 							countSuccess++;
-
+							
 							for(int account = 0; account < ItemNames.Count; account++) {
 								textBox1.Text += (ItemNames[account].PadLeft(30) + ":" 
 								                  + DecimalsToSum[account].ToString().PadLeft(15).PadRight(4) 
@@ -139,12 +139,12 @@ namespace Unbalanced
 							                  + Environment.NewLine + Environment.NewLine);
 						}
 					}
-
+					
 					if(countSuccess == 0) {
 						int n = 8;
-
+						
 						textBox1.Text = "This combination of numbers has no possible way to balance. The " + n + " solutions closest to 0 follow." + Environment.NewLine;
-
+						
 						for(int closeResultPos = 0 ; closeResultPos < n; closeResultPos++) {
 							Tuple<Decimal,Decimal,List<string>> sumWithOpps = AbsSumsAndOpps[closeResultPos];
 							for(int account = 0; account < ItemNames.Count; account++) {
@@ -158,7 +158,7 @@ namespace Unbalanced
 							                  + Environment.NewLine + Environment.NewLine);
 						}
 					}
-
+					
 					/*List<List<String>> Operations = new List<List<String>>();
                     BuildPaths(Operations, new List<String>(), 0, columnCount);
 
@@ -231,18 +231,18 @@ namespace Unbalanced
 						}
 
 					}*/
-                }
-                catch (Exception ex)
-                {
-                    textBox1.Text = ex.Message;
-                }
-
-                
-            }    
-        }
-
-        
-    }
-
-    
+				}
+				catch (Exception ex)
+				{
+					textBox1.Text = ex.Message;
+				}
+				
+				
+			}    
+		}
+		
+		
+	}
+	
+	
 }
