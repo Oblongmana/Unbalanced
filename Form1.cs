@@ -216,8 +216,13 @@ namespace Unbalanced
 					BuildPathsAndSumsTogetherMinimal(DecimalsToSum, OpsSoFar, 0, 0, columnCount);
 					String stuff = "yarr";
 					Decimal outcome = maxAbsDiff;
+					textBox1.Text += "Balances To" +":"+ maxAbsDiff + Environment.NewLine;
+					for(int i = 0; i < DecimalsToSum.Count; i++){
+						textBox1.Text += maxAbsDiffOps[i] + "," + DecimalsToSum[i] + Environment.NewLine;
+					}
+
 					//BuildPathsAndSumsTogetherNoAbs (SumsAndOps, DecimalsToSum, OpsSoFar, 0, 0, columnCount);(SumsAndOps, DecimalsToSum, OpsSoFar, 0, 0, columnCount);
-					//SumsAndOps.Sort( (a,b) => a.Item1.CompareTo(b.Item1) );
+//					SumsAndOps.Sort( (a,b) => a.Item1.CompareTo(b.Item1) );
 					
 //					int countSuccess = 0;
 //					textBox1.Text = "";
